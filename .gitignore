@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+mobile/android/
+mobile/.expo/
+android/
+.expo/
+dist/
+build/
+web-build/
+APK_Release/
+
+# Binaries, executables, and packages
+*.exe
+*.apk
+*.aab
+cloudflared.exe
+python-*.exe
+*.log
+
+# Database backups
+data/attendance_backup_*
+backend/data/attendance_backup_*
+
+# Keystores & credentials
+*.jks
+*.keystore
+*.p8
+*.p12
+*.key
+*.pem
+
+# Environment variables
+.env
+.env.local
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Standalone git backups
+.git_standalone/
+*.git_standalone/

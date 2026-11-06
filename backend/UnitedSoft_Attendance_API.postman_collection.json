@@ -1,0 +1,299 @@
+{
+  "info": {
+    "_postman_id": "c1f7a220-4e31-4fa3-95cf-255d6f46187b",
+    "name": "UnitedSoft Mobile Attendance & Payroll API",
+    "description": "Production REST API collection for UnitedSoft Attendance & Automated Payroll System.\nAccessible from cross-platform mobile apps (Android/iOS) and web admin portals.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Login - HR Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "    console.log('Saved auth token to collection');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@unitedsoft.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Login - Employee",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alex@unitedsoft.com\",\n  \"password\": \"emp123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alex@unitedsoft.com\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/forgot-password", "host": ["{{baseUrl}}"], "path": ["auth", "forgot-password"] }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alex@unitedsoft.com\",\n  \"code\": \"123456\",\n  \"newPassword\": \"emp12345\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/reset-password", "host": ["{{baseUrl}}"], "path": ["auth", "reset-password"] }
+          }
+        },
+        {
+          "name": "Get Current Session User (Me)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        },
+        {
+          "name": "Demo Accounts List",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/auth/demo-accounts", "host": ["{{baseUrl}}"], "path": ["auth", "demo-accounts"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Attendance",
+      "item": [
+        {
+          "name": "Punch Check-In (GPS & Biometric)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"latitude\": 12.9716,\n  \"longitude\": 77.5946,\n  \"verificationMethod\": \"GPS_BIOMETRIC\",\n  \"bypassGeofence\": false\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/attendance/check-in", "host": ["{{baseUrl}}"], "path": ["attendance", "check-in"] }
+          }
+        },
+        {
+          "name": "Punch Check-Out",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"latitude\": 12.9716,\n  \"longitude\": 77.5946,\n  \"remarks\": \"Standard shift complete\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/attendance/check-out", "host": ["{{baseUrl}}"], "path": ["attendance", "check-out"] }
+          }
+        },
+        {
+          "name": "Today's Status",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/attendance/today", "host": ["{{baseUrl}}"], "path": ["attendance", "today"] }
+          }
+        },
+        {
+          "name": "My Attendance History",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/attendance/my-history?month=2026-09", "host": ["{{baseUrl}}"], "path": ["attendance", "my-history"] }
+          }
+        },
+        {
+          "name": "All Attendance Records (HR/Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/attendance/all", "host": ["{{baseUrl}}"], "path": ["attendance", "all"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Leave Management",
+      "item": [
+        {
+          "name": "Apply for Leave",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"leave_type\": \"CASUAL\",\n  \"start_date\": \"2026-10-12\",\n  \"end_date\": \"2026-10-13\",\n  \"reason\": \"Personal family commitment\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/leaves/apply", "host": ["{{baseUrl}}"], "path": ["leaves", "apply"] }
+          }
+        },
+        {
+          "name": "My Leaves & Balance",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/leaves/my-leaves", "host": ["{{baseUrl}}"], "path": ["leaves", "my-leaves"] }
+          }
+        },
+        {
+          "name": "All Company Leaves (HR/Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/leaves/all?status=PENDING", "host": ["{{baseUrl}}"], "path": ["leaves", "all"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Automated Payroll",
+      "item": [
+        {
+          "name": "Run Automated Payroll (1-Click)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"month_year\": \"2026-09\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/payroll/generate", "host": ["{{baseUrl}}"], "path": ["payroll", "generate"] }
+          }
+        },
+        {
+          "name": "Get Monthly Payroll Records",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/payroll/records?month_year=2026-09", "host": ["{{baseUrl}}"], "path": ["payroll", "records"] }
+          }
+        },
+        {
+          "name": "Download PDF Payslip",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/payroll/slips/pay-usr-emp-01-2026-09/pdf", "host": ["{{baseUrl}}"], "path": ["payroll", "slips", "pay-usr-emp-01-2026-09", "pdf"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Employee Management",
+      "item": [
+        {
+          "name": "List All Employees",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/employees", "host": ["{{baseUrl}}"], "path": ["employees"] }
+          }
+        },
+        {
+          "name": "Onboard New Employee",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Michael Scott\",\n  \"email\": \"michael@unitedsoft.com\",\n  \"role\": \"EMPLOYEE\",\n  \"department\": \"Management\",\n  \"designation\": \"Regional Manager\",\n  \"base_salary\": 80000,\n  \"hra\": 20000,\n  \"allowances\": 8000,\n  \"pf_deduction\": 3500,\n  \"tax_deduction\": 9000\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/employees", "host": ["{{baseUrl}}"], "path": ["employees"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Reports & Data Export",
+      "item": [
+        {
+          "name": "Export Attendance CSV",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/reports/attendance?format=csv&month=2026-09", "host": ["{{baseUrl}}"], "path": ["reports", "attendance"] }
+          }
+        },
+        {
+          "name": "Export Payroll CSV",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/reports/payroll?format=csv&month_year=2026-09", "host": ["{{baseUrl}}"], "path": ["reports", "payroll"] }
+          }
+        }
+      ]
+    }
+  ]
+}
